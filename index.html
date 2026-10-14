@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Цветок Любви | Романтический 3D Бутон</title>
+    <meta name="description" content="Романтический 3D распускающийся цветок с интерактивным управлением, нежной атмосферой и любовным посланием.">
+    <!-- Google Fonts: Cormorant Garamond (романтическая каллиграфия) и Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Фоновый холст для падающих лепестков и мерцающих светлячков -->
+    <canvas id="ambient-canvas"></canvas>
+
+    <!-- Верхний романтический заголовок -->
+    <header class="romantic-header">
+        <h1 class="romantic-title" id="romantic-heading">Для тебя</h1>
+        <p class="romantic-subtitle">Прикоснись к цветку, чтобы почувствовать его дыхание</p>
+    </header>
+
+    <!-- Основная 3D сцена цветка -->
+    <main class="scene-viewport" id="scene-viewport" aria-label="3D цветок">
+        <div class="scene-drag-hint" id="drag-hint">
+            <span>✦ Вращай мышкой в 3D пространстве ✦</span>
+        </div>
+
+        <div class="wrapper" id="flower-wrapper">
+            <div class="flower" id="flower">
+                <!-- Сердцевина со светящимися тычинками и лепестки генерируются скриптом -->
+                <div class="core-glow"></div>
+                <div class="stamens" id="stamens"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Нижняя романтическая панель управления -->
+    <nav class="controls-panel" id="controls-panel" aria-label="Управление атмосферой">
+        <!-- Темы / Цвета -->
+        <div class="controls-group themes-group">
+            <span class="group-label">Оттенок:</span>
+            <div class="theme-buttons">
+                <button type="button" class="theme-btn active" data-theme="rose" title="Алая бархатная роза">
+                    <span class="theme-swatch rose"></span> Роза
+                </button>
+                <button type="button" class="theme-btn" data-theme="peony" title="Нежный пион">
+                    <span class="theme-swatch peony"></span> Пион
+                </button>
+                <button type="button" class="theme-btn" data-theme="orchid" title="Лунная орхидея">
+                    <span class="theme-swatch orchid"></span> Орхидея
+                </button>
+                <button type="button" class="theme-btn" data-theme="sunset" title="Золотой закат">
+                    <span class="theme-swatch sunset"></span> Закат
+                </button>
+            </div>
+        </div>
+
+        <!-- Управление цветением -->
+        <div class="controls-group bloom-group">
+            <button type="button" class="icon-btn" id="play-pause-btn" title="Пауза / Возобновить цветение">
+                <span id="play-pause-icon">⏸</span>
+                <span class="btn-text">Цветение</span>
+            </button>
+            <button type="button" class="icon-btn" id="layers-btn" title="Переключить плотность лепестков">
+                <span>🌸</span>
+                <span class="btn-text" id="layers-text">Пышный бутон</span>
+            </button>
+        </div>
+
+        <!-- Романтические действия -->
+        <div class="controls-group actions-group">
+            <button type="button" class="action-btn letter-btn" id="open-letter-btn" title="Открыть романтическое послание">
+                <span>💌</span> Послание
+            </button>
+            <button type="button" class="icon-btn music-btn" id="music-btn" title="Включить романтическую мелодию">
+                <span id="music-icon">🎵</span>
+                <span class="btn-text">Музыка</span>
+            </button>
+            <button type="button" class="icon-btn" id="reset-view-btn" title="Сбросить угол обзора">
+                <span>🔄</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Модальное окно романтического послания -->
+    <div class="letter-modal-backdrop" id="letter-modal" aria-hidden="true">
+        <div class="letter-modal" role="dialog" aria-labelledby="letter-title">
+            <button type="button" class="modal-close-btn" id="close-letter-btn" aria-label="Закрыть послание">✕</button>
+            <div class="letter-decoration top-flourish">❦</div>
+            <h2 class="letter-title" id="letter-title">Послание Сердца</h2>
+            
+            <div class="letter-body" id="letter-body-display">
+                <p id="letter-paragraph">
+                    Среди миллиардов звезд и бесконечных просторов вселенной этот цветок распускается только для тебя. 
+                    Пусть каждый его лепесток напоминает о том, насколько ты удивительна, нежна и любима.
+                </p>
+            </div>
+
+            <div class="letter-edit-container hidden" id="letter-edit-container">
+                <textarea id="letter-textarea" rows="4" maxlength="500" placeholder="Напишите здесь ваше романтическое признание..."></textarea>
+                <div class="letter-edit-actions">
+                    <button type="button" class="save-letter-btn" id="save-letter-btn">Сохранить</button>
+                    <button type="button" class="cancel-letter-btn" id="cancel-letter-btn">Отмена</button>
+                </div>
+            </div>
+
+            <div class="letter-signature">
+                <span id="letter-sign-text">С бесконечной нежностью</span>
+                <button type="button" class="edit-letter-btn" id="edit-letter-btn" title="Редактировать текст">✎ Изменить</button>
+            </div>
+            <div class="letter-decoration bottom-flourish">❦</div>
+        </div>
+    </div>
+
+    <!-- Контейнер для всплывающих сердечек при клике -->
+    <div id="hearts-container"></div>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
